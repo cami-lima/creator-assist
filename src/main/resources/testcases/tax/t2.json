@@ -1,0 +1,10 @@
+{
+  "id": "T2",
+  "description": "Foreign income (AdSense) + domestic, phase-out band",
+  "incomeEntries": [
+    {"description": "AdSense May", "origin": "FOREIGN", "originalAmount": 900.00, "originalCurrency": "USD", "exchangeRateOnReceiptDate": 5.40, "receiptDate": "2026-05-05"},
+    {"description": "Pix from brand Y", "origin": "DOMESTIC", "originalAmount": 1800.00, "originalCurrency": "BRL", "receiptDate": "2026-05-15"}
+  ],
+  "expectedTax": 651.83,
+  "expectedStatus": "OK"
+}

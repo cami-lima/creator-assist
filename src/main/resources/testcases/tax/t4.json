@@ -1,0 +1,6 @@
+{
+  "id": "T4",
+  "description": "Ambiguous / incomplete data (hard case)",
+  "freeText": "I got like 5 thousand and change from brands and a bit of AdSense, I didn't keep track properly",
+  "expectedResult": "ambiguous=true, no tax amount calculated (must not guess a number)"
+}

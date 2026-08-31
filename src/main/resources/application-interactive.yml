@@ -1,0 +1,11 @@
+# Profile for the real, human-driven entry point (InteractiveRunner).
+# Activate with: ./gradlew bootRun --args='--spring.profiles.active=interactive'
+#
+# No web server needed for a console program - avoids the "port 8080
+# already in use" issue we hit earlier in development. Uses the
+# default profile's file-based H2 database (not overridden here), so
+# data persists across runs - run this twice with the same name to see
+# memory continuity for yourself.
+spring:
+  main:
+    web-application-type: none

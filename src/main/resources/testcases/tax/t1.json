@@ -1,0 +1,9 @@
+{
+  "id": "T1",
+  "description": "Beginner creator, domestic Pix only",
+  "incomeEntries": [
+    {"description": "Pix from brand X", "origin": "DOMESTIC", "originalAmount": 3200.00, "originalCurrency": "BRL", "receiptDate": "2026-05-10"}
+  ],
+  "expectedTax": 0.00,
+  "expectedStatus": "OK"
+}

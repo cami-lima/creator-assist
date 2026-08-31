@@ -1,0 +1,15 @@
+{
+  "id": "T5",
+  "description": "Near/over the MEI revenue cap (tests memory-driven business-rule detection, not just tax math)",
+  "previousStateSimulated": {
+    "taxRegime": "MEI",
+    "yearToDateRevenue": 76000.00
+  },
+  "incomeEntries": [
+    {"description": "Various Pix payments", "origin": "DOMESTIC", "originalAmount": 9000.00, "originalCurrency": "BRL", "receiptDate": "2026-06-10"}
+  ],
+  "expectedTax": 1566.27,
+  "expectedStatus": "OK",
+  "expectedMeiWarning": true,
+  "testNote": "Year-to-date revenue (76000 + 9000 = 85000) exceeds the MEI cap (81000). The orchestrator must surface a warning recommending the creator seek accounting guidance about switching tax regimes -- this is a distinct memory scenario from T3 (which only tests that a stored regime decision is not re-asked)."
+}

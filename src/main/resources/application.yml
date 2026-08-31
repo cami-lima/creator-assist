@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: creator-assist
+  # H2, file-based: no external database installation is required.
+  # Data persists across restarts in ./data/creatorassist.mv.db, which
+  # is how a real deployment's cross-month memory would need to behave.
+  # The "eval" profile (application-eval.yml) overrides this with an
+  # in-memory instance instead, so every evaluation run starts clean.
+  datasource:
+    url: jdbc:h2:file:./data/creatorassist;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+# Anthropic config is kept here for reference only. ClaudeClient is
+# not wired as an active bean right now (see llm/ClaudeClient.kt).
+# Switch back once you have API credits.
+anthropic:
+  api-key: ${ANTHROPIC_API_KEY:}
+  model: claude-sonnet-4-6
+  base-url: https://api.anthropic.com/v1/messages
+
+# Active provider for this submission: Google's Gemini API, which has
+# a genuinely free tier (no credit card required). gemini-2.5-flash was
+# deprecated for new API keys partway through development; confirmed
+# working model as of this submission is gemini-3.6-flash.
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  model: gemini-3.6-flash
+  base-url: https://generativelanguage.googleapis.com/v1beta/models

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Creator Assist</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+          font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+          margin: 0;
+          background: #f4f5f4;
+          color: #1f2421;
+        }
+        header {
+          background: #1f3d2e;
+          color: white;
+          padding: 18px 28px;
+        }
+        header h1 { margin: 0; font-size: 1.25em; }
+        header p { margin: 4px 0 0; opacity: 0.85; font-size: 0.9em; }
+        .layout {
+          display: flex;
+          gap: 24px;
+          padding: 24px;
+          max-width: 1100px;
+          margin: 0 auto;
+          align-items: flex-start;
+        }
+        .panel {
+          background: white;
+          border-radius: 8px;
+          padding: 20px 24px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+          flex: 1;
+          min-width: 0;
+        }
+        label { display: block; margin-top: 14px; font-weight: 600; font-size: 0.9em; }
+        input[type=text], textarea {
+          width: 100%; padding: 9px; margin-top: 4px; font-family: inherit;
+          font-size: 0.95em; border: 1px solid #ccc; border-radius: 5px;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        input[type=file] { margin-top: 6px; }
+        button {
+          margin-top: 20px; padding: 11px 22px; background: #2c6e49; color: white;
+          border: none; border-radius: 5px; font-size: 0.95em; cursor: pointer;
+          width: 100%;
+        }
+        button:disabled { background: #9aa79f; cursor: default; }
+        #status { margin-top: 10px; color: #666; font-size: 0.9em; min-height: 1.2em; }
+        #result {
+          white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace;
+          font-size: 0.88em; line-height: 1.55; color: #222;
+        }
+        #result:empty::before {
+          content: "O relatorio gerado vai aparecer aqui.";
+          color: #999; font-style: italic; font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Creator Assist</h1>
+    <p>Assistente fiscal e contratual para criadores de conteudo</p>
+</header>
+
+<div class="layout">
+    <div class="panel">
+        <label>Seu nome ou apelido</label>
+        <input type="text" id="creatorName" placeholder="Ex: Camila">
+
+        <label>Mes de referencia</label>
+        <input type="text" id="referenceMonth" placeholder="Ex: Agosto de 2026">
+
+        <label>Descreva os recebimentos deste mes</label>
+        <textarea id="incomeText" placeholder="Ex: Recebi um Pix de R$ 4500 de uma marca no dia 10 de agosto, e mais R$ 2000 de outra marca no dia 20."></textarea>
+
+        <label>Contrato de patrocinio (opcional)</label>
+        <input type="file" id="contractFile" accept=".md,.txt">
+
+        <button id="submitBtn" onclick="gerarRelatorio()">Gerar relatorio</button>
+        <div id="status"></div>
+    </div>
+
+    <div class="panel">
+        <div id="result"></div>
+    </div>
+</div>
+
+<script>
+    function readFileAsText(file) {
+      return new Promise(function(resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function() { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+    }
+
+    async function gerarRelatorio() {
+      const btn = document.getElementById('submitBtn');
+      const status = document.getElementById('status');
+      const result = document.getElementById('result');
+      result.textContent = '';
+      status.textContent = 'Processando... (pode levar alguns segundos)';
+      btn.disabled = true;
+
+      try {
+        const creatorName = document.getElementById('creatorName').value || 'criador-anonimo';
+        const referenceMonth = document.getElementById('referenceMonth').value || 'mes nao informado';
+        const incomeText = document.getElementById('incomeText').value;
+        const fileInput = document.getElementById('contractFile');
+
+        let contractText = null;
+        if (fileInput.files.length > 0) {
+          contractText = await readFileAsText(fileInput.files[0]);
+        }
+
+        const response = await fetch('/api/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ creatorName: creatorName, referenceMonth: referenceMonth, incomeText: incomeText, contractText: contractText })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro do servidor: HTTP ' + response.status);
+        }
+
+        const data = await response.json();
+        status.textContent = '';
+
+        if (data.ambiguous) {
+          result.textContent = 'Nao foi possivel interpretar os recebimentos:\n\n' + data.message;
+        } else {
+          result.textContent = data.reportMarkdown;
+        }
+      } catch (err) {
+        status.textContent = '';
+        result.textContent = 'Erro: ' + err.message + '\n\n(Pode ser limite de cota da API - espere um minuto e tente de novo.)';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+</script>
+
+</body>
+</html>

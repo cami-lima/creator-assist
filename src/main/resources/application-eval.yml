@@ -1,0 +1,20 @@
+# Profile used to run the evaluation (baseline vs. solution). Activate
+# with: ./gradlew bootRun --args='--spring.profiles.active=eval'
+spring:
+  # This profile runs a one-shot console job (EvalRunner), not a web
+  # service, skipping web server startup avoids a "port 8080 already
+  # in use" failure if a previous run is still lingering, and makes
+  # each run start faster.
+  main:
+    web-application-type: none
+  # In-memory (not file-based like the default profile): every
+  # evaluation run starts from a clean slate, so results are not
+  # affected by state left over from a previous run.
+  datasource:
+    url: jdbc:h2:mem:creatorassist;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

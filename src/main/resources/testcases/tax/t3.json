@@ -1,0 +1,14 @@
+{
+  "id": "T3",
+  "description": "Continuity across months (tests memory)",
+  "previousStateSimulated": {
+    "taxRegime": "SELF_EMPLOYED",
+    "yearToDateRevenue": 40000.00
+  },
+  "incomeEntries": [
+    {"description": "Various Pix payments", "origin": "DOMESTIC", "originalAmount": 8200.00, "originalCurrency": "BRL", "receiptDate": "2026-06-10"}
+  ],
+  "expectedTax": 1346.27,
+  "expectedStatus": "OK",
+  "testNote": "The agent must NOT ask again whether the creator is self-employed or MEI; that decision is already in memory."
+}
